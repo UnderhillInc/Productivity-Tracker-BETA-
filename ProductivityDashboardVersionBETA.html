@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket Time Tracker</title>
+    <link id="theme-style" rel="stylesheet" href="default.css">
+    <style>
+        /* Compact and narrow table styling */
+        table {
+            width: 60%; /* Narrower table */
+            border-collapse: collapse;
+            font-size: 14px;
+            margin: 0 auto; /* Center the table */
+        }
+        th, td {
+            padding: 6px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        .logged {
+            text-decoration: line-through;
+            color: #888;
+        }
+        .edit-dropdown {
+            width: 100%;
+            padding: 4px;
+            font-size: 14px;
+        }
+        /* Collapsible table styling */
+        .collapsible {
+            background-color: #f4f4f4;
+            color: #333;
+            cursor: pointer;
+            padding: 8px;
+            width: 60%;
+            border: 1px solid #ddd;
+            text-align: center; /* Center the button text */
+            outline: none;
+            font-size: 14px;
+            margin: 10px auto; /* Center the button */
+            display: block; /* Ensure the button is block-level for centering */
+        }
+        .collapsible:hover {
+            background-color: #ddd;
+        }
+        .content {
+            display: none; /* Hidden by default */
+            overflow: hidden;
+            width: 60%;
+            margin: 0 auto; /* Center the content */
+        }
+        /* Layout and height options */
+        .layout-options, .height-options {
+            margin: 10px 0;
+        }
+        .layout-options label, .height-options label {
+            margin-right: 10px;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .form-container, iframe {
+            flex: 1 1 45%; /* Default layout: Form on the right */
+        }
+        .form-bottom iframe {
+            width: 100%;
+            margin-top: 20px;
+        }
+        .form-left {
+            flex-direction: row-reverse;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Left Side: Input Form -->
+        <div class="form-container">
+            <div class="input-group">
+                <label for="ticketNumber">Ticket Number:</label>
+                <input type="text" id="ticketNumber" placeholder="Enter ticket number">
+            </div>
+
+            <div class="input-group">
+                <label for="taskType">Task Type:</label>
+                <select id="taskType">
+                    <option value="30">Indie Marketplace Approved (30 Minutes)</option>
+                    <option value="15">Indie Marketplace PE (15 Minutes)</option>
+                    <option value="30">Indie Delco Approved (30 Minutes)</option>
+                    <option value="15">Indie Delco PE (15 Minutes)</option>
+                    <option value="20">BRG Delco Approved (20 Minutes)</option>
+                    <option value="10">BRG Delco PE (10 Minutes)</option>
+                    <option value="20">BRG Marketplace Approved (20 Minutes)</option>
+                    <option value="10">BRG Marketplace PE (10 Minutes)</option>
+                    <option value="10">CORD Complete (10 Minutes)</option>
+                    <option value="5">CORD PE (5 Minutes)</option>
+                    <option value="30">RP - COO Creation Ops Approved (30 Minutes)</option>
+                    <option value="15">RP - COO Creation Pending Error (15 Minutes)</option>
+                    <option value="30">Grocery - COO Creation Ops Approved (30 Minutes)</option>
+                    <option value="15">Grocery - COO Creation Pending Error (15 Minutes)</option>
+                    <option value="30">RP - INDE Ops Approved (30 Minutes)</option>
+                    <option value="15">RP - INDE Pending Error (15 Minutes)</option>
+                    <option value="35">Grocery - INDE Ops Approved (35 Minutes)</option>
+                    <option value="20">Grocery - INDE Pending Error (20 Minutes)</option>
+                    <option value="20">RP - BRG Equity - Ops Approved (20 Minutes)</option>
+                    <option value="10">RP - BRG Equity - Pending Error (10 Minutes)</option>
+                    <option value="20">Grocery - BRG Equity - Ops Approved (20 Minutes)</option>
+                    <option value="10">Grocery - BRG Equity - Pending Error (10 Minutes)</option>
+                    <option value="30">RP - BRG Franchise - Ops Approved (30 Minutes)</option>
+                    <option value="15">RP - BRG Franchise - Pending Error (15 Minutes)</option>
+                    <option value="20">Grocery - BRG Franchise - Ops Approved (20 Minutes)</option>
+                    <option value="10">Grocery - BRG Franchise - Pending Error (10 Minutes)</option>
+                    <option value="60">Scottish Grocer - INDE Ops Approved (60 Minutes)</option>
+                    <option value="15">Scottish Grocer - INDE Pending Error (15 Minutes)</option>
+                    <option value="20">Scottish Grocer - BRG Equity - Ops Approved (20 Minutes)</option>
+                    <option value="10">Scottish Grocer - BRG Equity - Pending Error (10 Minutes)</option>
+                    <option value="20">Scottish Grocer - BRG Franchise - Ops Approved (20 Minutes)</option>
+                    <option value="15">Scottish Grocer - BRG Franchise - Pending Error (15 Minutes)</option>
+                    <option value="3.5">COT - No answer (3.5 Minutes)</option>
+                    <option value="10">COT - Success - Contract Sent (10 Minutes)</option>
+                    <option value="5">COT - Success - Callback/Not Progressed (5 Minutes)</option>
+                    <option value="3.5">COT - Branded Redirect (3.5 Minutes)</option>
+                    <option value="11.5">Bankform - Approved (11.5 Minutes)</option>
+                    <option value="10">Bankform - Pended (10 Minutes)</option>
+                    <option value="2">Bankform - Rejected (2 Minutes)</option>
+                    <option value="2.5">COO/C&R (2.5 Minutes)</option>
+                    <option value="2">Churn (2 Minutes)</option>
+                    <option value="3">PH Invoice - Redirect (3 Minutes)</option>
+                    <option value="8">PH Invoice - General (8 Minutes)</option>
+                    <option value="10">PH Invoice - Jira (10 Minutes)</option>
+                    <option value="6">Fraud Call - Success (6 Minutes)</option>
+                    <option value="4">Fraud Call - Compliance (4 Minutes)</option>
+                    <option value="2">Fraud Call - No answer (2 Minutes)</option>
+                    <option value="3">Finance - Redirected (3 Minutes)</option>
+                    <option value="3">Bounceback - Ticket Created (3 Minutes)</option>
+                    <option value="1">Bounceback - RM Note (1 Minute)</option>
+                    <option value="7">CORD - Completed (7 Minutes)</option>
+                    <option value="5">CORD - Pended (5 Minutes)</option>
+                    <option value="3">CORD - No answer (3 Minutes)</option>
+                    <option value="60">BRG Menu - New Demo (60 Minutes)</option>
+                    <option value="30">BRG Menu - Menu Update (30 Minutes)</option>
+                    <option value="5">BRG Menu - Ticket Response (5 Minutes)</option>
+                    <option value="5">BRG Menu - Push Live (5 Minutes)</option>
+                    <option value="1">Salesforce COT Approval (1 Minute)</option>
+                    <option value="3">Misc - Historical Tickets (3 Minutes)</option>
+                    <option value="5">Misc - Restricted Items (5 Minutes)</option>
+                    <option value="3">Misc - Slack - Device Ticket (3 Minutes)</option>
+                    <option value="30">Scottish Grocery CSV Upload/Creation (30 Minutes)</option>
+                    <option value="7">Misc - Slack - Delivery Package (7 Minutes)</option>
+                    <option value="1.5">Misc - Slack - Add Brand (1.5 Minutes)</option>
+                    <option value="7">Misc - Slack - General (7 Minutes)</option>
+                    <option value="3">Misc - Slack - #temp-menu-support (3 Minutes)</option>
+                    <option value="15">Grocery CSV Upload/Creation (15 Minutes)</option>
+                    <option value="60">Misc - PizzaGoGo - Build (60 Minutes)</option>
+                    <option value="15">Misc - PizzaGoGo - Dip Check (15 Minutes)</option>
+                    <option value="7">Misc - Webforms/Delivery Changes (7 Minutes)</option>
+                    <option value="4.5">Misc - Dixy Chicken Bundle (4.5 Minutes)</option>
+                    <option value="30">Misc - BAU Menu (30 Minutes)</option>
+                    <option value="custom">Misc (Custom time)</option>
+                </select>
+            </div>
+
+            <div class="input-group" id="customTimeGroup" style="display: none;">
+                <label for="customTime">Custom Time (minutes):</label>
+                <input type="number" id="customTime" min="1">
+            </div>
+
+            <div class="button-group">
+                <button onclick="addTicket()">Add Ticket</button>
+                <button onclick="clearForm()">Clear Form</button>
+            </div>
+
+            <div class="input-group">
+                <label for="hoursWorked">Total Hours Worked:</label>
+                <input type="number" id="hoursWorked" min="0" placeholder="Enter total hours">
+            </div>
+
+            <div class="button-group">
+                <button onclick="calculatePercentage()">Calculate Percentage</button>
+                <button onclick="downloadCSV()">Save as CSV</button>
+            </div>
+        </div>
+
+        <!-- Right Side: Google Form -->
+        <iframe id="googleForm" src="https://docs.google.com/forms/d/e/1FAIpQLScG9FyhjEmgGvYtE3gLst-Xx2KF0BLKMkWlhabwVCAs4zCrXg/viewform?embedded=true" 
+                width="500" 
+                height="500" 
+                frameborder="0" 
+                marginheight="0" 
+                marginwidth="0">
+            Loading…
+        </iframe>
+    </div>
+
+    <!-- Collapsible Table Section -->
+    <button type="button" class="collapsible">Show/Hide Ticket Table</button>
+    <div class="content">
+        <table>
+            <thead>
+                <tr>
+                    <th>Logged</th>
+                    <th>Ticket Number</th>
+                    <th>Task Type</th>
+                    <th>Time Spent (minutes)</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="ticketTableBody"></tbody>
+        </table>
+    </div>
+
+    <h2 id="result"></h2>
+
+    <!-- Theme Switcher Buttons -->
+    <div class="theme-buttons">
+        <button onclick="setTheme('default')">Default</button>
+        <button onclick="setTheme('invert')">Invert</button>
+        <button onclick="setTheme('darkmode')">Dark Mode</button>
+    </div>
+
+<script>
+    const ticketData = JSON.parse(localStorage.getItem('ticketData')) || [];
+
+    document.getElementById('taskType').addEventListener('change', function() {
+        const customTimeGroup = document.getElementById('customTimeGroup');
+        if (this.value === 'custom') {
+            customTimeGroup.style.display = 'block';
+        } else {
+            customTimeGroup.style.display = 'none';
+        }
+    });
+
+    function addTicket() {
+        const ticketNumber = document.getElementById('ticketNumber').value;
+        const taskType = document.getElementById('taskType');
+        const taskTypeText = taskType.options[taskType.selectedIndex].text;
+        let timeSpent = parseFloat(taskType.value);
+
+        if (taskType.value === 'custom') {
+            timeSpent = parseFloat(document.getElementById('customTime').value);
+            if (isNaN(timeSpent) || timeSpent <= 0) {
+                alert('Please enter a valid custom time.');
+                return;
+            }
+        }
+
+        if (!ticketNumber.trim()) {
+            alert('Please enter a ticket number.');
+            return;
+        }
+
+        const ticketUrl = `https://justeatukpoc.zendesk.com/agent/tickets/${ticketNumber}`;
+
+        ticketData.push({ ticketNumber: ticketUrl, taskType: taskTypeText, timeSpent, logged: false });
+        localStorage.setItem('ticketData', JSON.stringify(ticketData));
+        updateTable();
+    }
+
+    function updateTable() {
+        const tableBody = document.getElementById('ticketTableBody');
+        tableBody.innerHTML = '';
+
+        ticketData.forEach((ticket, index) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>
+                    <input type="checkbox" ${ticket.logged ? 'checked' : ''} onchange="toggleLogged(${index})">
+                </td>
+                <td><a href="${ticket.ticketNumber}" target="_blank" class="${ticket.logged ? 'logged' : ''}">${ticket.ticketNumber}</a></td>
+                <td>
+                    <select class="edit-dropdown" onchange="updateTaskType(${index}, this.value)">
+<option value="30" ${ticket.taskType.includes('30') ? 'selected' : ''}>Indie Marketplace Approved (30 Minutes)</option>
+<option value="15" ${ticket.taskType.includes('15') ? 'selected' : ''}>Indie Marketplace PE (15 Minutes)</option>
+<option value="30" ${ticket.taskType.includes('30') ? 'selected' : ''}>Indie Delco Approved (30 Minutes)</option>
+<option value="15" ${ticket.taskType.includes('15') ? 'selected' : ''}>Indie Delco PE (15 Minutes)</option>
+<option value="20" ${ticket.taskType.includes('20') ? 'selected' : ''}>BRG Delco Approved (20 Minutes)</option>
+<option value="10" ${ticket.taskType.includes('10') ? 'selected' : ''}>BRG Delco PE (10 Minutes)</option>
+<option value="20" ${ticket.taskType.includes('20') ? 'selected' : ''}>BRG Marketplace Approved (20 Minutes)</option>
+<option value="10" ${ticket.taskType.includes('10') ? 'selected' : ''}>BRG Marketplace PE (10 Minutes)</option>
+<option value="10" ${ticket.taskType.includes('10') ? 'selected' : ''}>CORD Complete (10 Minutes)</option>
+<option value="5" ${ticket.taskType.includes('5') ? 'selected' : ''}>CORD PE (5 Minutes)</option>
+<option value="30" ${ticket.taskType.includes('30') ? 'selected' : ''}>RP - COO Creation Ops Approved (30 Minutes)</option>
+<option value="15" ${ticket.taskType.includes('15') ? 'selected' : ''}>RP - COO Creation Pending Error (15 Minutes)</option>
+<option value="30" ${ticket.taskType.includes('30') ? 'selected' : ''}>Grocery - COO Creation Ops Approved (30 Minutes)</option>
+<option value="15" ${ticket.taskType.includes('15') ? 'selected' : ''}>Grocery - COO Creation Pending Error (15 Minutes)</option>
+<option value="30" ${ticket.taskType.includes('30') ? 'selected' : ''}>RP - INDE Ops Approved (30 Minutes)</option>
+<option value="15" ${ticket.taskType.includes('15') ? 'selected' : ''}>RP - INDE Pending Error (15 Minutes)</option>
+<option value="35" ${ticket.taskType.includes('35') ? 'selected' : ''}>Grocery - INDE Ops Approved (35 Minutes)</option>
+<option value="20" ${ticket.taskType.includes('20') ? 'selected' : ''}>Grocery - INDE Pending Error (20 Minutes)</option>
+<option value="20" ${ticket.taskType.includes('20') ? 'selected' : ''}>RP - BRG Equity - Ops Approved (20 Minutes)</option>
+<option value="10" ${ticket.taskType.includes('10') ? 'selected' : ''}>RP - BRG Equity - Pending Error (10 Minutes)</option>
+<option value="20" ${ticket.taskType.includes('20') ? 'selected' : ''}>Grocery - BRG Equity - Ops Approved (20 Minutes)</option>
+<option value="10" ${ticket.taskType.includes('10') ? 'selected' : ''}>Grocery - BRG Equity - Pending Error (10 Minutes)</option>
+<option value="30" ${ticket.taskType.includes('30') ? 'selected' : ''}>RP - BRG Franchise - Ops Approved (30 Minutes)</option>
+<option value="15" ${ticket.taskType.includes('15') ? 'selected' : ''}>RP - BRG Franchise - Pending Error (15 Minutes)</option>
+<option value="20" ${ticket.taskType.includes('20') ? 'selected' : ''}>Grocery - BRG Franchise - Ops Approved (20 Minutes)</option>
+<option value="10" ${ticket.taskType.includes('10') ? 'selected' : ''}>Grocery - BRG Franchise - Pending Error (10 Minutes)</option>
+<option value="60" ${ticket.taskType.includes('60') ? 'selected' : ''}>Scottish Grocer - INDE Ops Approved (60 Minutes)</option>
+<option value="15" ${ticket.taskType.includes('15') ? 'selected' : ''}>Scottish Grocer - INDE Pending Error (15 Minutes)</option>
+<option value="20" ${ticket.taskType.includes('20') ? 'selected' : ''}>Scottish Grocer - BRG Equity - Ops Approved (20 Minutes)</option>
+<option value="10" ${ticket.taskType.includes('10') ? 'selected' : ''}>Scottish Grocer - BRG Equity - Pending Error (10 Minutes)</option>
+<option value="20" ${ticket.taskType.includes('20') ? 'selected' : ''}>Scottish Grocer - BRG Franchise - Ops Approved (20 Minutes)</option>
+<option value="15" ${ticket.taskType.includes('15') ? 'selected' : ''}>Scottish Grocer - BRG Franchise - Pending Error (15 Minutes)</option>
+<option value="3.5" ${ticket.taskType.includes('3.5') ? 'selected' : ''}>COT - No answer (3.5 Minutes)</option>
+<option value="10" ${ticket.taskType.includes('10') ? 'selected' : ''}>COT - Success - Contract Sent (10 Minutes)</option>
+<option value="5" ${ticket.taskType.includes('5') ? 'selected' : ''}>COT - Success - Callback/Not Progressed (5 Minutes)</option>
+<option value="3.5" ${ticket.taskType.includes('3.5') ? 'selected' : ''}>COT - Branded Redirect (3.5 Minutes)</option>
+<option value="11.5" ${ticket.taskType.includes('11.5') ? 'selected' : ''}>Bankform - Approved (11.5 Minutes)</option>
+<option value="10" ${ticket.taskType.includes('10') ? 'selected' : ''}>Bankform - Pended (10 Minutes)</option>
+<option value="2" ${ticket.taskType.includes('2') ? 'selected' : ''}>Bankform - Rejected (2 Minutes)</option>
+<option value="2.5" ${ticket.taskType.includes('2.5') ? 'selected' : ''}>COO/C&R (2.5 Minutes)</option>
+<option value="2" ${ticket.taskType.includes('2') ? 'selected' : ''}>Churn (2 Minutes)</option>
+<option value="3" ${ticket.taskType.includes('3') ? 'selected' : ''}>PH Invoice - Redirect (3 Minutes)</option>
+<option value="8" ${ticket.taskType.includes('8') ? 'selected' : ''}>PH Invoice - General (8 Minutes)</option>
+<option value="10" ${ticket.taskType.includes('10') ? 'selected' : ''}>PH Invoice - Jira (10 Minutes)</option>
+<option value="6" ${ticket.taskType.includes('6') ? 'selected' : ''}>Fraud Call - Success (6 Minutes)</option>
+<option value="4" ${ticket.taskType.includes('4') ? 'selected' : ''}>Fraud Call - Compliance (4 Minutes)</option>
+<option value="2" ${ticket.taskType.includes('2') ? 'selected' : ''}>Fraud Call - No answer (2 Minutes)</option>
+<option value="3" ${ticket.taskType.includes('3') ? 'selected' : ''}>Finance - Redirected (3 Minutes)</option>
+<option value="3" ${ticket.taskType.includes('3') ? 'selected' : ''}>Bounceback - Ticket Created (3 Minutes)</option>
+<option value="1" ${ticket.taskType.includes('1') ? 'selected' : ''}>Bounceback - RM Note (1 Minute)</option>
+<option value="7" ${ticket.taskType.includes('7') ? 'selected' : ''}>CORD - Completed (7 Minutes)</option>
+<option value="5" ${ticket.taskType.includes('5') ? 'selected' : ''}>CORD - Pended (5 Minutes)</option>
+<option value="3" ${ticket.taskType.includes('3') ? 'selected' : ''}>CORD - No answer (3 Minutes)</option>
+<option value="60" ${ticket.taskType.includes('60') ? 'selected' : ''}>BRG Menu - New Demo (60 Minutes)</option>
+<option value="30" ${ticket.taskType.includes('30') ? 'selected' : ''}>BRG Menu - Menu Update (30 Minutes)</option>
+<option value="5" ${ticket.taskType.includes('5') ? 'selected' : ''}>BRG Menu - Ticket Response (5 Minutes)</option>
+<option value="5" ${ticket.taskType.includes('5') ? 'selected' : ''}>BRG Menu - Push Live (5 Minutes)</option>
+<option value="1" ${ticket.taskType.includes('1') ? 'selected' : ''}>Salesforce COT Approval (1 Minute)</option>
+<option value="3" ${ticket.taskType.includes('3') ? 'selected' : ''}>Misc - Historical Tickets (3 Minutes)</option>
+<option value="5" ${ticket.taskType.includes('5') ? 'selected' : ''}>Misc - Restricted Items (5 Minutes)</option>
+<option value="3" ${ticket.taskType.includes('3') ? 'selected' : ''}>Misc - Slack - Device Ticket (3 Minutes)</option>
+<option value="30" ${ticket.taskType.includes('30') ? 'selected' : ''}>Scottish Grocery CSV Upload/Creation (30 Minutes)</option>
+<option value="7" ${ticket.taskType.includes('7') ? 'selected' : ''}>Misc - Slack - Delivery Package (7 Minutes)</option>
+<option value="1.5" ${ticket.taskType.includes('1.5') ? 'selected' : ''}>Misc - Slack - Add Brand (1.5 Minutes)</option>
+<option value="7" ${ticket.taskType.includes('7') ? 'selected' : ''}>Misc - Slack - General (7 Minutes)</option>
+<option value="3" ${ticket.taskType.includes('3') ? 'selected' : ''}>Misc - Slack - #temp-menu-support (3 Minutes)</option>
+<option value="15" ${ticket.taskType.includes('15') ? 'selected' : ''}>Grocery CSV Upload/Creation (15 Minutes)</option>
+<option value="60" ${ticket.taskType.includes('60') ? 'selected' : ''}>Misc - PizzaGoGo - Build (60 Minutes)</option>
+<option value="15" ${ticket.taskType.includes('15') ? 'selected' : ''}>Misc - PizzaGoGo - Dip Check (15 Minutes)</option>
+<option value="7" ${ticket.taskType.includes('7') ? 'selected' : ''}>Misc - Webforms/Delivery Changes (7 Minutes)</option>
+<option value="4.5" ${ticket.taskType.includes('4.5') ? 'selected' : ''}>Misc - Dixy Chicken Bundle (4.5 Minutes)</option>
+<option value="30" ${ticket.taskType.includes('30') ? 'selected' : ''}>Misc - BAU Menu (30 Minutes)</option>
+<option value="custom" ${ticket.taskType.includes('custom') ? 'selected' : ''}>Misc (Custom time)</option>
+                    </select>
+                </td>
+                <td>${ticket.timeSpent}</td>
+                <td>
+                    <button onclick="deleteTicket(${index})">Delete</button>
+                </td>
+            `;
+            tableBody.appendChild(row);
+        });
+    }
+
+    function toggleLogged(index) {
+        ticketData[index].logged = !ticketData[index].logged;
+        localStorage.setItem('ticketData', JSON.stringify(ticketData));
+        updateTable();
+    }
+
+    function updateTaskType(index, newValue) {
+        const taskTypeText = document.querySelector(`#ticketTableBody tr:nth-child(${index + 1}) .edit-dropdown option[value="${newValue}"]`).text;
+        ticketData[index].taskType = taskTypeText;
+        ticketData[index].timeSpent = parseFloat(newValue);
+        localStorage.setItem('ticketData', JSON.stringify(ticketData));
+        updateTable();
+    }
+
+    function deleteTicket(index) {
+        ticketData.splice(index, 1);
+        localStorage.setItem('ticketData', JSON.stringify(ticketData));
+        updateTable();
+    }
+
+    function calculatePercentage() {
+        const hoursWorked = parseFloat(document.getElementById('hoursWorked').value);
+        if (isNaN(hoursWorked) || hoursWorked <= 0) {
+            alert('Please enter a valid number of hours worked.');
+            return;
+        }
+
+        const totalMinutesWorked = hoursWorked * 60;
+        const totalMinutesAssigned = ticketData.reduce((sum, ticket) => sum + ticket.timeSpent, 0);
+        const percentage = ((totalMinutesAssigned / totalMinutesWorked) * 100).toFixed(2);
+
+        document.getElementById('result').textContent = `You have allocated ${percentage}% of your working hours.`;
+    }
+
+    function downloadCSV() {
+        const csvHeader = 'Logged,Ticket Number,Task Type,Time Spent (minutes),Date,Hours Worked\n';
+        const date = new Date().toLocaleString();
+        const hoursWorked = document.getElementById('hoursWorked').value || 'N/A';
+        const csvRows = ticketData.map(ticket => (
+            `${ticket.logged ? 'Yes' : 'No'},${ticket.ticketNumber},${ticket.taskType},${ticket.timeSpent},${date},${hoursWorked}`
+        ));
+
+        const csvContent = csvHeader + csvRows.join('\n');
+        const blob = new Blob([csvContent], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'ticket_data.csv';
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    function clearForm() {
+        document.getElementById('ticketNumber').value = '';
+        document.getElementById('taskType').value = '30';
+        document.getElementById('customTime').value = '';
+        document.getElementById('customTimeGroup').style.display = 'none';
+        document.getElementById('hoursWorked').value = '';
+
+        localStorage.removeItem('ticketData');
+        ticketData.length = 0;
+        updateTable();
+    }
+
+    function setTheme(theme) {
+        const themeStyle = document.getElementById('theme-style');
+        themeStyle.href = `${theme}.css`;
+        localStorage.setItem('theme', theme);
+    }
+
+    // Layout and Height Options
+    function changeLayout(layout) {
+        const container = document.querySelector('.container');
+        container.className = 'container'; // Reset class
+        if (layout === 'form-left') {
+            container.classList.add('form-left');
+        } else if (layout === 'form-bottom') {
+            container.classList.add('form-bottom');
+        }
+    }
+
+    function changeHeight(height) {
+        const iframe = document.getElementById('googleForm');
+        iframe.style.height = `${height}%`;
+    }
+
+    // Collapsible Table Functionality
+    const collapsible = document.querySelector('.collapsible');
+    collapsible.addEventListener('click', function() {
+        this.classList.toggle('active');
+        const content = this.nextElementSibling;
+        if (content.style.display === 'block') {
+            content.style.display = 'none';
+        } else {
+            content.style.display = 'block';
+        }
+    });
+
+    // Load saved theme from localStorage
+    const savedTheme = localStorage.getItem('theme') || 'default';
+    setTheme(savedTheme);
+
+    updateTable();
+</script>
+
+</body>
+</html>
